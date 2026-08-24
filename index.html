@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PHY308 — Mechanics of Discrete &amp; Continuous Systems — Fall 2026</title>
+<style>
+  /* ===== RESET & BASE ===== */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 17px; scroll-behavior: smooth; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background: #fdfdfd;
+  }
+  a { color: #981e32; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* ===== HEADER / BANNER ===== */
+  .site-header {
+    background: #f5f5f5;
+    border-bottom: 4px solid #981e32;
+    padding: 1.8rem 1.5rem 1rem;
+    text-align: center;
+  }
+  .site-header h1 { font-size: 1.7rem; color: #222; font-weight: 600; }
+  .site-header .subtitle { font-size: 1.05rem; color: #666; margin-top: .25rem; }
+  .site-header .meta { font-size: .9rem; color: #888; margin-top: .6rem; }
+  .site-header .meta span { margin: 0 .6rem; white-space: nowrap; }
+  .site-header .tas { font-size: .85rem; color: #777; margin-top: .5rem; }
+  .site-header .syllabus-label { font-size: .85rem; color: #888; margin-top: .2rem; }
+
+  /* ===== NAV TABS ===== */
+  .nav-bar {
+    position: sticky; top: 0; z-index: 100;
+    background: #fff;
+    border-bottom: 1px solid #ddd;
+    display: flex; flex-wrap: wrap; justify-content: center;
+    padding: 0 .5rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,.04);
+  }
+  .nav-bar button {
+    background: none; border: none;
+    font-size: .80rem; font-family: inherit;
+    padding: .7rem .55rem; cursor: pointer;
+    color: #555; border-bottom: 3px solid transparent;
+    transition: color .15s, border-color .15s;
+    white-space: nowrap;
+  }
+  .nav-bar button:hover { color: #981e32; }
+  .nav-bar button.active { color: #981e32; border-bottom-color: #981e32; font-weight: 600; }
+
+  /* ===== MAIN CONTENT ===== */
+  .container { max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+  .tab-panel { display: none; animation: fadeIn .3s ease; }
+  .tab-panel.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+  h2 { font-size: 1.5rem; color: #981e32; margin: 1.5rem 0 .6rem; }
+  h2:first-child { margin-top: 0; }
+  h3 { font-size: 1.15rem; color: #2a5db0; margin: 1.2rem 0 .4rem; }
+  p, li { margin-bottom: .55rem; }
+  ul, ol { padding-left: 1.5rem; margin-bottom: .8rem; }
+  ul ul, ol ol, ul ol, ol ul { margin-bottom: 0; }
+  blockquote {
+    border-left: 3px solid #981e32; margin: 1rem 0;
+    padding: .5rem 1rem; background: #fafafa; color: #555;
+  }
+
+  /* ===== SCHEDULE TABLE ===== */
+  .schedule-wrapper { overflow-x: auto; margin: 1rem 0; }
+  .schedule-table { width: 100%; border-collapse: collapse; font-size: .85rem; min-width: 700px; }
+  .schedule-table th {
+    background: #981e32; color: #fff; padding: .55rem .7rem;
+    text-align: left; font-weight: 600;
+  }
+  .schedule-table td {
+    padding: .55rem .7rem; border-bottom: 1px solid #ddd;
+    vertical-align: top;
+  }
+  .schedule-table tr:hover td { background: #fdf5f5; }
+  .schedule-table .week-num { font-weight: 600; color: #981e32; white-space: nowrap; }
+  .schedule-table .break-row td { background: #f5f0f0; font-weight: 600; color: #981e32; text-align: center; }
+  .schedule-table .finals-row td { font-weight: 600; }
+
+  /* ===== SIDEBAR / INFO BOX ===== */
+  .info-box {
+    background: #f9f9f9; border: 1px solid #e0e0e0; border-radius: 6px;
+    padding: 1.2rem 1.5rem; margin-bottom: 1.8rem;
+    font-size: .9rem; line-height: 1.5;
+  }
+  .info-box strong { color: #555; }
+  .info-box .info-row { margin-bottom: .35rem; }
+
+  /* ===== CALLOUTS ===== */
+  .callout-red {
+    background: #fef6f6; border-left: 3px solid #981e32;
+    padding: .6rem 1rem; margin: .8rem 0; border-radius: 0 4px 4px 0;
+  }
+
+  /* ===== FOOTER ===== */
+  .site-footer {
+    text-align: center; font-size: .8rem; color: #999;
+    padding: 1.5rem; border-top: 1px solid #eee;
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 700px) {
+    .site-header h1 { font-size: 1.3rem; }
+    .nav-bar button { font-size: .72rem; padding: .5rem .4rem; }
+    .container { padding: 1.2rem .8rem 2rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<header class="site-header">
+  <h1>PHY308 &mdash; Mechanics of Discrete &amp; Continuous Systems</h1>
+  <div class="subtitle">Fall 2026 &bull; Prof. Daniel Grin</div>
+  <div class="syllabus-label"><em>Syllabus</em></div>
+  <div class="meta">
+    <span>Tues &amp; Thurs 10:00&ndash;11:30 AM</span>
+    <span>Hilles 011</span>
+    <span><a href="mailto:dgrin@haverford.edu">dgrin@haverford.edu</a></span>
+  </div>
+  <div class="tas">Teaching Assistants: Joey Busch, Viraj Singhania, Heshu Yin</div>
+</header>
+
+<!-- ===== NAVIGATION ===== -->
+<nav class="nav-bar" id="navBar">
+  <button data-tab="about" class="active">About</button>
+  <button data-tab="schedule">Schedule</button>
+  <button data-tab="structure">Course Structure</button>
+  <button data-tab="materials">Materials</button>
+  <button data-tab="grading">Assignments &amp; Grading</button>
+  <button data-tab="participation">Participation</button>
+  <button data-tab="policies">Policies</button>
+  <button data-tab="norms">Classroom Norms</button>
+  <button data-tab="resources">Resources &amp; Support</button>
+</nav>
+
+<!-- ===== MAIN CONTENT ===== -->
+<main class="container">
+
+  <!-- ========== ABOUT ========== -->
+  <section class="tab-panel active" id="tab-about">
+    <h2>Motivation</h2>
+    <div class="catenoid-img"><img src="catenoid.jpeg" alt="Catenoid surface — a soap film spanning two rings" style="max-width:280px; float:right; margin:0 0 1rem 1.5rem; border-radius:6px; box-shadow:0 2px 8px rgba(0,0,0,.12);"></div>
+    <p>Symmetries and conservation laws are at the heart of modern physics, and come to us from classical mechanics. In <strong>Part I</strong> of this course, we revisit classical physics and learn <strong>Lagrangian mechanics</strong>. The variational principle states that certain integrals over a path or surface are extremized in nature &mdash; this yields the correct equations of motion for mechanical (and many other) systems. These methods can help us understand central-force motion, motion in accelerated reference frames, and more! We will understand that for every symmetry, nature furnishes a conserved quantity. We study classical mechanics in this way to facilitate the classical&ndash;quantum transition, and to equip us to solve diverse problems, from engineering to astrophysics and beyond.</p>
+    <p>We also study classical mechanics because it continues to yield surprises, such as the onset of <strong>chaos</strong> in deterministic systems. Lagrange's equations are essential in my cosmology research, where they can be used to understand the dynamics of the axion (a hypothetical dark matter particle) or of inflation (an epoch of accelerated expansion in the first 10<sup>&minus;43</sup>&thinsp;s of cosmic time).</p>
+    <p>In <strong>Part II</strong>, we will learn about <strong>fluid dynamics</strong>, important in systems as diverse as terrestrial atmospheres, pipes, oceans, blood flows, car traffic patterns, and accretion disks around black holes. You will learn to analytically solve for flows in a variety of geometries and regimes (turbulent and laminar), to describe the properties of flows, to manipulate the fluid stress tensor, and to analyze sound waves and shocks. This exciting subject is usually neglected in undergraduate curricula, so I hope that you enjoy the opportunity to engage the material here. I use the fluid equations almost every day in my research on cosmic structure formation.</p>
+
+    <div class="info-box">
+      <div class="info-row"><strong>Prerequisites:</strong> Phys H213 or PHYS B205 and B207</div>
+      <div class="info-row"><strong>Class:</strong> Tues &amp; Thurs 10:00&ndash;11:30 AM, Hilles 011</div>
+            <div class="info-row"><strong>Professor:</strong> Daniel Grin &bull; L107 KINSC &bull; <a href="mailto:dgrin@haverford.edu">dgrin@haverford.edu</a></div>
+      <div class="info-row"><strong>TAs:</strong> Joey Busch, Viraj Singhania, Heshu Yin</div>
+      <div class="info-row"><strong>Student Hours / Problem Session:</strong> TBD</div>
+    </div>
+    <p style="margin-top:1.2rem;"><em>If you'd like a .pdf file of this syllabus, <a href="PHY308Syllabus_Fall2026.pdf">click here</a>.</em></p>
+  </section>
+
+  <!-- ========== SCHEDULE ========== -->
+  <section class="tab-panel" id="tab-schedule">
+    <h2>Draft Class Schedule</h2>
+    <p><em>This is a rough schedule and may change. Regularly check Moodle for updates.</em></p>
+    <div class="schedule-wrapper">
+      <table class="schedule-table">
+        <thead>
+          <tr><th>Week</th><th>Topics</th><th>Reading</th><th>Assignments</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="week-num">Week 1<br>(8/31&ndash;9/4)</td>
+            <td>Newton's Laws, momentum conservation (e.g. rocket equation), center of mass, angular momentum. Submit scheduling survey by 9 AM 9/3.</td>
+            <td>Taylor 1&ndash;3.3</td>
+            <td>Homework 0 due 9/4 by 5 PM (Gradescope)</td>
+          </tr>
+          <tr>
+            <td class="week-num">Week 2<br>(9/8&ndash;9/11)</td>
+            <td>Angular momentum, work, energy, conservative forces, path integrals. No class Labor Day (9/6).</td>
+            <td>Taylor 3.4&ndash;4.3</td>
+            <td>Homework 1 due 9/11</td>
+          </tr>
+          <tr>
+            <td class="week-num">Week 3<br>(9/14&ndash;9/18)</td>
+            <td>Mathematical skill building (e.g. evaluating line integrals, energy diagrams, variational methods)</td>
+            <td>Taylor 4.4&ndash;4.10, 6</td>
+            <td>Homework 2 due 9/18; <em>15-minute quiz</em></td>
+          </tr>
+          <tr>
+            <td class="week-num">Week 4<br>(9/21&ndash;9/25)</td>
+            <td>Variational methods (e.g. Brachistochrone), Lagrangian mechanics. 9/21 is Yom Kippur &mdash; let me know if you will be away.</td>
+            <td>Taylor 7.1&ndash;7.4</td>
+            <td>Homework 3 due 9/25</td>
+          </tr>
+          <tr>
+            <td class="week-num">Week 5<br>(9/28&ndash;10/2)</td>
+            <td>Lagrangian mechanics</td>
+            <td>Taylor 7.5&ndash;7.10</td>
+            <td>Homework 4 due 10/2; <em>15-minute quiz</em></td>
+          </tr>
+          <tr>
+            <td class="week-num">Week 6<br>(10/5&ndash;10/9)</td>
+            <td>Lagrangian mechanics and central forces</td>
+            <td>Taylor 8</td>
+            <td>Midterm 10/6; No Homework</td>
+          </tr>
+          <tr class="break-row">
+            <td colspan="4">🍂 Fall Break (10/12&ndash;10/18) &mdash; Enrichment: Aharanov&ndash;Bohm effect (optional, not assessed)</td>
+          </tr>
+          <tr>
+            <td class="week-num">Week 7<br>(10/19&ndash;10/23)</td>
+            <td>Kepler orbits, physics in accelerated reference frames</td>
+            <td>Taylor 9, 13</td>
+            <td>Homework 5 due 10/23; <em>15-minute quiz</em></td>
+          </tr>
+          <tr>
+            <td class="week-num">Week 8<br>(10/26&ndash;10/30)</td>
+            <td>Nonlinear dynamics and chaos</td>
+            <td>Taylor 12</td>
+            <td>Homework 6 due 10/30</td>
+          </tr>
+          <tr>
+            <td class="week-num">Week 9<br>(11/2&ndash;11/6)</td>
+            <td>Fluid equations and conservation laws. 11/3 is Election Day!</td>
+            <td>Lautrup 1, 2.1&ndash;2.4, 6.1&ndash;6.3, 12.1&ndash;12.3, 13.1</td>
+            <td>Homework 7 due 11/6</td>
+          </tr>
+          <tr>
+            <td class="week-num">Week 10<br>(11/9&ndash;11/13)</td>
+            <td>Bernoulli's equation, vorticity, potential flow</td>
+            <td>Lautrup 13</td>
+            <td>Homework 8 due 11/13</td>
+          </tr>
+          <tr>
+            <td class="week-num">Week 11<br>(11/16&ndash;11/20)</td>
+            <td>Viscosity, Reynolds number, channel flow, demos</td>
+            <td>Lautrup 15, 16</td>
+            <td>Homework 9 due 11/20; <em>15-minute quiz</em></td>
+          </tr>
+          <tr>
+            <td class="week-num">Week 12<br>(11/23&ndash;11/25)</td>
+            <td>Channel flow, compressible fluids (+ sound waves). No class 11/26 (Thanksgiving Break).</td>
+            <td>Lautrup 16 &amp; 14</td>
+            <td>&mdash;</td>
+          </tr>
+          <tr>
+            <td class="week-num">Week 13<br>(11/30&ndash;12/4)</td>
+            <td>Sound waves &amp; Turbulence + Fluid Demos</td>
+            <td>Lautrup 14 &amp; 31</td>
+            <td>Homework 10 due 12/4; <em>15-minute quiz</em></td>
+          </tr>
+          <tr>
+            <td class="week-num">Week 14<br>(12/7&ndash;12/11)</td>
+            <td>More fluids (clarification, overflow) + course content review</td>
+            <td>TBD</td>
+            <td>Homework 11 due 12/11</td>
+          </tr>
+          <tr class="finals-row">
+            <td class="week-num">Finals<br>(12/13&ndash;12/17)</td>
+            <td>Final exam review</td>
+            <td>&mdash;</td>
+            <td>Self-scheduled final exam</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ========== COURSE STRUCTURE ========== -->
+  <section class="tab-panel" id="tab-structure">
+    <h2>Weekly Course Structure</h2>
+    <p>The mathematical demands of this class are greater than 100/200-level physics classes. Active problem solving is essential, as is keeping up with reading/lectures. Our class will thus use a mixture of lecture and active learning techniques, including in-class problem solving.</p>
+    <div class="callout-red">Prof. Grin will communicate with you via Moodle and email &mdash; you are expected to stay current with these.</div>
+
+    <h3>Thursdays</h3>
+    <ul>
+      <li><strong>Before class</strong> &mdash; students should do assigned reading, complete concept tests and reading questions (graded for completion) on Moodle by 11 PM on Wednesday. Students should submit questions on Piazza.</li>
+      <li><strong>In class</strong> &mdash; Prof. Grin will lecture (high-level material overview, some detailed derivation, answering student questions).</li>
+    </ul>
+
+    <h3>Tuesdays</h3>
+    <ul>
+      <li><strong>Before class</strong> &mdash; students should watch video lecture and submit Piazza questions.</li>
+      <li>Prof. Grin will answer student questions at the beginning of class.</li>
+      <li>The rest of the class will be devoted to group collaboration on one problem from the week's homework, which will be distributed/provided in class. If you finish the problem, you may work on other problems from the homework.
+        <ol>
+          <li>TAs &amp; Prof. Grin will circulate to answer questions.</li>
+          <li>We will provide hard copies of the textbook or you can bring your own.</li>
+          <li>You should begin by writing down key equations, concepts, and a plan to solve the problem, with no electronic/computational aides. Then check in with the TAs and Prof. Grin, who will sign off on your work. <strong>Your grade on the in-class problem will depend significantly on this first step in problem solving.</strong></li>
+          <li>Continue on to solving the problem in detail (e.g. doing the algebra), using Mathematica and/or a graphing calculator. You should not have any online resources open during this session (even a web browser).</li>
+          <li>Submit in-class work at the end of class (you can open a web browser then). Do in-class work using <strong>purple pencil or pen</strong> (provided), and out-of-class work using another color of your choice. You will have the rest of the week to complete the homework (which will have other problems), due by 11 PM Friday as a single .pdf file in GradeScope.</li>
+        </ol>
+      </li>
+    </ul>
+  </section>
+
+  <!-- ========== MATERIALS ========== -->
+  <section class="tab-panel" id="tab-materials">
+    <h2>Textbook</h2>
+    <h3>Required Texts</h3>
+    <ul>
+      <li>John R. Taylor, <em>Classical Mechanics</em>, University Science Books, 2004.</li>
+      <li>B. Lautrup, <em>Physics of Continuous Matter</em>, Second Edition, CRC Press, 2019.</li>
+    </ul>
+    <p>You may read a physical or Ebook version of these texts on reserve from the library, use one of several copies in the physics lounge, or purchase it. It is <strong style="color:#981e32;">important</strong> that you do all assigned reading prior to class sessions. This is an advanced course, and you are ready to take ownership of the material. I can't wait to tackle this fun, and exciting material together!</p>
+
+    <h3>Other Useful Books</h3>
+    <ul>
+      <li>Goldstein, Safko, and Poole, <em>Classical Mechanics</em> &mdash; <strong>a classic graduate mechanics text.</strong></li>
+      <li>H. M. Shey, <em>div curl grad and all that: an informal text on vector calculus</em>, fourth edition, 2004 &mdash; <strong>helpful summary of multivariable calculus.</strong></li>
+      <li>S. H. Strogatz, <em>Nonlinear dynamics and chaos</em>, second edition, 2015.</li>
+      <li>E. Guyon et al., <em>Physical Hydrodynamics</em>, second edition, 2015.</li>
+    </ul>
+
+    <h3>How to Read the Textbook</h3>
+    <p>Your textbook reading should be <strong>active</strong>: Have a pencil in hand and make notes/do little calculations in a notebook. Follow along with all the derivations and try examples. If you don't understand everything, keep going and circle back to the section with multiple passes. Note what is confusing and ask questions (in class, or via Piazza/Moodle).</p>
+  </section>
+
+  <!-- ========== ASSIGNMENTS & GRADING ========== -->
+  <section class="tab-panel" id="tab-grading">
+    <h2>Homework</h2>
+    <p>There will be weekly homework assignments, with required problems and some optional ungraded problems to practice. As described above, one problem will be provided during Tuesday's problem solving class. Only some of the other required problems will be graded (you won't know until the homework is returned). All of them will be checked for completion, with solutions provided on Moodle. To keep workflow manageable, you should work on homework throughout the week, come to student hours/problem sessions, and collaborate during group work times. These are essential: hands-on problem solving is indispensable and at the core of physics. Due to the course pace and TA effort, <strong style="color:#981e32;">we will not have 2-pass grading</strong>.</p>
+    <p>You must begin the non-in-class problems independently prior to working with your team. Your submitted homework should be your own writeup, and the honor code requires that you not present the work of other humans or AI as if it were your own.</p>
+    <div class="callout-red">Do not put your name in your homework, as they will be graded anonymously (to avoid bias &mdash; explicit and implicit). I encourage you to take an Implicit Bias test at <a href="https://implicit.harvard.edu/implicit/takeatest.html">implicit.harvard.edu</a>. Work submitted with names on it will not be graded until resubmitted and will be deemed late.</div>
+
+    <h2>Python Problems</h2>
+    <p>Computation is an important aspect of modern scientific problem solving. In lieu of your in-class problem, each week, we will provide an optional Python programming problem assessing mastery of the same concepts. Programming and computation are not a pre-requisite for this class, and so the analytic/Python problem are equally valued. If you choose the Python problem, you must complete it in class using the KINSC Jupyter hub, without using AI. You may collaborate. Each member of your team should work in their own Jupyter notebook. I recommend making this choice only if you have completed a course on computer programming at Haverford, or if you have spent a full summer (research or other job) doing daily computer programming.</p>
+
+    <h2>Exams / Quizzes</h2>
+    <p>There will be <strong>6 scheduled low-stakes hand-written in-class quizzes</strong>, spread throughout the course and based on recent material &mdash; you will have 15 minutes to complete them. The quizzes will have 2&ndash;3 questions assessing basic conceptual mastery and some straightforward applications of class content. Quizzes will assess your <strong style="color:#981e32;">individual</strong> understanding of material. During the quiz, you may use a one-sided cheat sheet that you must write yourself and submit with your quiz.</p>
+    <p>There will be a <strong>90-minute in-class midterm</strong>, and a <strong>3-hour self-scheduled final exam</strong> during the final-exam period. You may use Mathematica (but no online help resources or AI) during the exams, as well as graded homework and solution sets. You may use a 2-sided cheat sheet; the rules for the cheat sheet are otherwise the same as for the quizzes.</p>
+    <div class="callout-red">Quizzes and exams are an imperfect assessment tool. However, since collaboration is central and encouraged in this class, quizzes/exams provide a means to assess your <em>individual</em> growth in the class and provide constructive feedback. We value your qualities as scientists no matter what your exam grades are.</div>
+
+    <h2>Grading</h2>
+    <p>The grade will be determined by first computing a numerical grade as follows:</p>
+    <ul>
+      <li><strong>Homework (32%)</strong></li>
+      <li><strong>Quizzes/Exams (54%)</strong> &mdash; 3% for every quiz during the semester (&times;6), 12% for the midterm, and 24% for final exam. Scores will be rescaled, first by setting the maximum student grade as 100, and then by adjusting any point deductions such that the class mean is 80 or higher.</li>
+      <li><strong>Participation and other contributions (14%)</strong> &mdash; Due to more extensive expectations, participation is given greater weight than is typical.</li>
+    </ul>
+    <p>The range 60%&rarr;100% will be split into bins corresponding to grades (1.0, 1.3, 1.7, 2.0, 2.3, 2.7, 3.0, 3.3, 3.7, 4.0) to assign a course grade. A midterm grade estimate will be generated. 60% and higher is a passing grade. I may drop the lowest homework score depending on overall class performance.</p>
+  </section>
+
+  <!-- ========== POLICIES ========== -->
+  <section class="tab-panel" id="tab-policies">
+    <h2>Late Work</h2>
+    <p>Due dates (I prefer the term to deadlines, see <a href="https://www.npr.org/2025/08/09/nx-s1-5494593/what-is-the-origin-of-the-word-deadline-an-exploration-of-its-etymology">here</a>) are part of life, and so it is important that you submit work on time. We will accept late HW with a grade penalty of <strong>10% per day</strong>. You may take <strong>two 1-week extensions without penalty</strong> &mdash; but you may not take two in a row. Turn in the scan of a sheet of paper that says "free extension" on GradeScope. These extensions apply only to homework.</p>
+    <p>HW extensions (with no penalty) are available for health situations, personal/family emergencies (and any other situation that would merit a dean's extension &mdash; reach out even before you hear from your dean so I can help). Request an extension as soon as you are aware of the situation (if possible more than 24 hours prior to the due date), but always put your health and safety first. If you have a planned absence (e.g. for a religious observance/sports game, etc.), please let me know a week or more prior to coordinate a plan to complete HW. We will accommodate long-term health challenges (beyond a 3&ndash;4 day period); these must be coordinated with your dean. Make-up quizzes and exams will be provided in health/family emergencies and for religious observances (in this case, please provide 1-week notice). Participation requirements during excused absence will be waived. Other late work will not be accepted.</p>
+
+    <h2>Honor Code</h2>
+    <p>The guiding principle of academic integrity is to never represent the work of others as your own. Please follow these guidelines:</p>
+
+    <h3>Collaboration</h3>
+    <ul>
+      <li>You will spend one class session a week on a collaborative homework problem. Unless other HW problems are marked <em>individual</em>, you may collaborate, but you must first attempt each problem (jot down key concepts, equations, and a rough plan &mdash; it is OK if you get stuck and discuss once you begin to collaborate).</li>
+      <li>Directly copying or photographing group work from a shared board is an honor-code violation. After collaboration write up your <strong>own</strong> solution.</li>
+      <li style="color:#981e32;"><strong>No collaboration on quizzes/exams.</strong></li>
+    </ul>
+
+    <h3>Other Guidelines</h3>
+    <ul>
+      <li>Do not post materials on Chegg/other websites, look up solutions on the Internet, or google key phrases in the question.</li>
+      <li>Please request clarification from me if you find yourself in any ambiguous situations. Consult Honor Council resources at: <a href="http://honorcouncil.haverford.edu/resources/">honorcouncil.haverford.edu/resources/</a>. Code violations will be reported to Honor Council.</li>
+    </ul>
+
+    <h3>Mathematica</h3>
+    <ul>
+      <li>You may use Mathematica to do algebra &amp; numerical work (HW, but see above, &amp; exams).</li>
+      <li>Try to do straightforward algebra without Mathematica, so that you don't become too dependent on it.</li>
+      <li>Attach your Mathematica notebook to your assignments. You may collaborate, but you must create and submit your own notebook, individually entering in all equations.</li>
+      <li>Disable your computer's WiFi during exams as Mathematica help pages can link to un-allowed resources.</li>
+    </ul>
+
+    <h3>Artificial Intelligence (AI)</h3>
+    <ul>
+      <li>Large Language Models (LLM) can provide rather complete responses to increasingly complex queries on mathematical/scientific topics. However, they can hallucinate, confuse concepts, or seriously run astray on some straightforward exercises.</li>
+      <li>You are not forbidden using AI on the out-of-class HW exercises, but <strong style="color:#981e32;">you are strongly discouraged from doing so</strong>. There is benefit in building understanding by "doing stuff the old fashioned way" to facilitate correct use of AI after you achieve mastery. Heavy AI use will impede your learning. <strong style="color:#981e32;">Use of LLMs is not allowed during collaborative in-class work, or during quizzes/exams.</strong></li>
+      <li>If you use an LLM on a HW:
+        <ol>
+          <li>Start the problem, write down key equations, and formulate a strategy before using AI.</li>
+          <li>State what AI tool you used, paste all AI interaction into the HW, and clearly state which part of the work <em>you</em> did unassisted &mdash; your prompt should be a specific question and not a request for AI to solve the problem. We will grade by assigning credit proportionally to our own assessment of how much of the work you did, and how much of the AI's work you checked.</li>
+          <li>Check all AI statements/steps by looking through course notes/text and correcting any mistakes.</li>
+          <li>You may use AI to suggest strategies to avoid tedious algebra (but be <strong>sure</strong> to tell the LLM to not just give away the answer), or to get started if you are truly stuck. AI is clumsy with numerical calculations and algebra; Mathematica is a better tool here.</li>
+        </ol>
+      </li>
+    </ul>
+
+    <h3>References</h3>
+    <p>Cite any references you use other than Taylor/Lautrup. If a tutor gives you solutions to a problem, do not use them, and tell them that this is not allowed. Do not look at posted solutions until after you have turned in the assignment (e.g. if you have an extension).</p>
+  </section>
+
+  <!-- ========== CLASSROOM NORMS ========== -->
+  <section class="tab-panel" id="tab-norms">
+    <h2>Classroom Norms</h2>
+
+    <h3>Values of This Class</h3>
+    <p>Every single student in this class <em>belongs here</em>! The physics community is struggling to overcome a legacy of elitism and demographic homogeneity (due to racism, sexism, ableism, homophobia, anti-Semitism, anti-Asian hate, Islamophobia, transphobia, and others). We will create a classroom environment (this includes Moodle, Piazza, student hours, problem sessions...) where all can learn (free of harassment). Inappropriate behavior includes any conduct (including jokes), verbal or physical, on or off campus, that interferes with an individual's or group's educational performance at Haverford or creates an intimidating, hostile, or offensive environment.</p>
+    <p>These include negative remarks or actions based on race, ethnicity, gender, disability, sexual orientation, gender identity, religion, age, nationality, or other group association. These remarks may be unintentional. If a peer tells you that your behavior is making them feel othered or excluded, halt the behavior, apologize, and avoid the behavior in the future. This is the <strong>oops, ouch!</strong> model. If you have to ask "is this comment/joke OK in a professional space?" you probably shouldn't do it in a class space. Be kind and be professional! This is required by professional norms and is part of your physics training.</p>
+    <p>We will follow the <a href="https://www.aps.org/meetings/policies/code-conduct.cfm">APS code of conduct</a>. As a department, we read peer-reviewed literature and professional society recommendations on how to be inclusive, and are also open to your suggestions about ways we can make our teaching and community more welcoming.</p>
+
+    <h3>College Policies</h3>
+    <p>If you have experienced any form of gender or sex-based discrimination, harassment, or violence, know that help and support are available. Staff members are trained to support students in navigating campus life, accessing health and counseling services, providing academic and housing accommodations, and more.</p>
+    <p>The College strongly encourages all students to report any incidents of sexual misconduct. Please be aware that all Haverford employees (other than those designated as confidential resources such as counselors, clergy, and healthcare providers) are required to report information about such discrimination and harassment to the <a href="http://www.haverford.edu/users/ktaylor4">Bi-College Title IX Coordinator</a>.</p>
+    <p>Information about the College's Sexual Misconduct policy, reporting options, and a list of campus and local resources can be found on the <a href="https://www.haverford.edu/title-ix/resources-support/title-ix-team">college's website</a>. If you have any concerns of inappropriate behavior that you experience or witness, you are welcome to address these concerns with me or another trusted CAPS counselor, support staff, or faculty member.</p>
+    <p>For resources on dealing with concerns, see the College's <a href="https://www.haverford.edu/deans-office-student-life/policies-students-guide/discrimination-and-harassment-policies">discrimination and harassment policies</a>, <a href="http://www.haverford.edu/sexual-misconduct">sexual misconduct policies</a>, and <a href="http://www.haverford.edu/sexual-misconduct/confidentiality-reporting">confidential reporting mechanisms</a>.</p>
+  </section>
+
+  <!-- ========== RESOURCES & SUPPORT ========== -->
+  <section class="tab-panel" id="tab-resources">
+    <h2>Communication / Getting Help</h2>
+    <p>I am accessible by email Mon&ndash;Fri between 9 AM and 5 PM, and will reply by the end of the next work day. The easiest way to fail in upper level physics is to not get help when you need it or fall behind. I encourage the use of peer tutors and study groups. I will reach out if you miss due dates. Student hours and weekly problem sessions are times set aside for you! Please come and ask questions.</p>
+    <p>The Office of Academic Resources (OAR) is on the first floor of Stokes, and can help you navigate Haverford from customs to commencement. Their services are free and unlimited. You're welcome to come study, relax, caffeinate, and connect with peers or staff committed to your success and well being. They offer services, workshops, study breaks, academic coaching, and peer tutoring. Visit <a href="https://haverford.edu/oar">haverford.edu/oar</a> to learn more and/or schedule an appointment.</p>
+
+    <h2>Statement of Accessibility</h2>
+    <p>Haverford College is committed to supporting the learning process for all students, and providing equal access to students with a disability. Contact me as soon as possible if you are having difficulties in the course. There are many resources on campus available to you, including the Office of Academic Resources (<a href="https://www.haverford.edu/oar/">haverford.edu/oar</a>) and the Office of Access and Disability Services (<a href="https://www.haverford.edu/access-and-disability-services/">haverford.edu/access-and-disability-services</a>).</p>
+    <div class="callout-red">I try to follow principles of universal design &mdash; supports aimed at those with disabilities should be central and normalized, to help those students, and because they are helpful to all (think of ramps in buildings!). Lectures will be recorded and available online. Adjustments for timed exercises will be discreetly made &mdash; get in touch at the beginning of the semester, please!</div>
+    <p>If you have (or think you have) a learning difference or disability including mental health, medical, or physical impairment, contact the Office of Access and Disability Services (ADS) at <a href="mailto:hc-ads@haverford.edu">hc-ads@haverford.edu</a>. The Coordinator will confidentially discuss the process to establish reasonable accommodations. Students who have received academic accommodations and want to use them should share their verification letter with me and meet with me ASAP to discuss their specific accommodations. Accommodations are not retroactive and require advance notice.</p>
+  </section>
+
+  
+
+
+  <!-- ========== PARTICIPATION ========== -->
+  <section class="tab-panel" id="tab-participation">
+    <h2>Participation</h2>
+    <p>In-class participation has a number of equally important contributions:</p>
+    <ol>
+      <li>Complete concept tests and reading questions on Moodle.</li>
+      <li>Participate on Piazza OR in-class discussions (questions to professor and interactions with peers/team-mates equally valued).</li>
+      <li>Work collaboratively with classmates on group exercises.</li>
+    </ol>
+    <p>This is done to credit varied forms of engagement &mdash; collaborative work and individual curiosity are both very valuable. Not all thrive in large group settings, so online engagement is given equal weight. This is done both as training for collaborative work and to foster an inclusive physics community.</p>
+
+    <h3>How Participation Fits Into Your Grade</h3>
+    <p>Participation and other contributions account for <strong>14%</strong> of the final grade. This is given greater weight than is typical due to the more extensive expectations in this course. See the <a href="#" onclick="document.querySelector('[data-tab=grading]').click(); return false;">Assignments &amp; Grading tab</a> for the full grading breakdown.</p>
+  </section>
+
+</main>
+
+<!-- ===== FOOTER ===== -->
+<footer class="site-footer">
+  <p>PHY308 &mdash; Fall 2026 &mdash; Haverford College &mdash; <a href="mailto:dgrin@haverford.edu">Daniel Grin</a></p>
+  <p style="margin-top:.4rem;">Site design based on <a href="https://andrealommen.github.io/PHY104/">Andrea Lommen's Physics/Astro 104 page</a>, advice from Ted Brzinski, and generated with <a href="https://www.deepseek.com/">DeepSeek V4 Pro 0423</a>.</p>
+</footer>
+
+<!-- ===== TAB SWITCHING ===== -->
+<script>
+(function() {
+  const buttons = document.querySelectorAll('#navBar button');
+  const panels = document.querySelectorAll('.tab-panel');
+
+  buttons.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      const target = this.getAttribute('data-tab');
+      buttons.forEach(function(b) { b.classList.remove('active'); });
+      this.classList.add('active');
+      panels.forEach(function(p) { p.classList.remove('active'); });
+      document.getElementById('tab-' + target).classList.add('active');
+      // Update URL hash
+      history.replaceState(null, null, '#' + target);
+    });
+  });
+
+  // Restore tab from URL hash
+  var hash = window.location.hash.replace('#', '');
+  if (hash) {
+    var btn = document.querySelector('[data-tab="' + hash + '"]');
+    if (btn) btn.click();
+  }
+})();
+</script>
+
+</body>
+</html>
